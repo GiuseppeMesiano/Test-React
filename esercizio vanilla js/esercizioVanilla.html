@@ -1,0 +1,94 @@
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Login</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="flex flex-col items-center justify-center h-screen bg-slate-200">
+        
+        <form id="loginForm" class="mb-6 shadow-lg w-fit p-16 rounded-lg bg-white">
+            <h1 class="text-3xl font-bold font-mono mb-6">Login</h1>
+            <div class="flex flex-col mb-2">
+                <label for="username" class="mb-1">Username:</label>
+                <input type="text" id="username" required class="p-2 border border-gray-300 rounded">
+            </div>
+            <div class="flex flex-col mb-2">
+                <label for="password" class="mb-1">Password:</label>
+                <input type="password" id="password" required class="p-2 border border-gray-300 rounded">
+            </div>
+            <button type="submit" class="py-2 px-4 bg-green-500 text-white rounded hover:bg-green-600">Login</button>
+        </form>
+        <div id="panel" class="hidden">
+            <p id="loader" class="mb-2">Loading...</p>
+            <p id="loggedInText" class="bg-white shadow-md w-fit font-bold text-green-600 p-6 rounded-md"></p>
+        </div>
+    </div>
+    <script>
+        const loginForm = document.getElementById('loginForm');
+        const panel = document.getElementById('panel');
+        const loader = document.getElementById('loader');
+        const loggedInText = document.getElementById('loggedInText');
+
+        const username = 'eliaspower';
+        const password = 'cicalino';
+        let loginAttempts = 0;
+
+        loginForm.addEventListener('submit', function (event) {
+            event.preventDefault();
+            const enteredUsername = document.getElementById('username').value;
+            const enteredPassword = document.getElementById('password').value;
+
+            if (enteredUsername === username && enteredPassword === password) {
+                showLoader();
+
+           
+                new Promise((resolve) => {
+                    setTimeout(resolve, 5000);
+                }).then(() => {
+                    hideLoader();
+                    showPanel();
+                    loggedInText.textContent = `Sei loggato ${enteredUsername}!`;
+                    loginForm.style.display = 'none ';
+                     
+                });
+            } else {
+                loginAttempts++;
+                if (loginAttempts >= 3) {
+                    loginForm.reset();
+                    loginForm.style.display = 'none';
+                    showError('Hai superato il limite di tentativi. Riprova più tardi.');
+                } else {
+                    showError('Credenziali errate. Riprova.');
+                }
+            }
+        });
+
+        function showLoader() {
+            loader.style.display = 'block';
+        }
+
+        function hideLoader() {
+            loader.style.display = 'none';
+        }
+
+        function showPanel() {
+            panel.style.display = 'block';
+        }
+
+        function showError(message) {
+            const error = document.createElement('p');
+            error.textContent = message;
+            error.style.color = 'red';
+            loginForm.appendChild(error);
+        }
+    </script>
+</body>
